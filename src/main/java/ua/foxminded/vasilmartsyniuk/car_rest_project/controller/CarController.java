@@ -41,6 +41,15 @@ public class CarController {
         return carService.updateCar(car);
     }
 
+    @GetMapping("/{make}/models/{model}/{year}")
+    public ResponseEntity<List<Car>> createOrUpdateCar(
+            @PathVariable String make,
+            @PathVariable String model,
+            @PathVariable Integer year) {
+        List<Car> cars = carService.listCarsByMakeModelYear(make, model, year);
+        return ResponseEntity.ok(cars);
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteCar(@RequestParam("id") int id) {
         Car car = carService.getById(id);

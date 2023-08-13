@@ -6,6 +6,7 @@ import ua.foxminded.vasilmartsyniuk.car_rest_project.entity.Car;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.repository.CarRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CarService {
@@ -36,4 +37,9 @@ public class CarService {
     public void deleteCar(Integer id) {
         carRepository.deleteById(id);
     }
+
+    public List<Car> listCarsByMakeModelYear(String make, String model, Integer year) {
+        return carRepository.findByMakeAndModelAndYear(make, model, year);
+    }
+
 }
