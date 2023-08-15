@@ -43,7 +43,8 @@ public class CategoryController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateCategory(@RequestBody Category category) {
+    public ResponseEntity<String> updateCategory(@RequestParam("id") Integer id, @RequestBody Category category) {
+        category.setId(id);
         categoryService.updateCategory(category);
         return ResponseEntity.ok("Category updated");
     }

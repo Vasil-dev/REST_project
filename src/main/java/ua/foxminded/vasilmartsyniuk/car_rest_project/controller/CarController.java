@@ -41,12 +41,13 @@ public class CarController {
         return carService.updateCar(car);
     }
 
-    @GetMapping("/{make}/models/{model}/{year}")
-    public ResponseEntity<List<Car>> createOrUpdateCar(
-            @PathVariable String make,
-            @PathVariable String model,
-            @PathVariable Integer year) {
-        List<Car> cars = carService.listCarsByMakeModelYear(make, model, year);
+    @GetMapping("/search")
+    public ResponseEntity<List<Car>> searchCars(
+            @RequestParam(name = "make", required = false) String make,
+            @RequestParam(name = "model", required = false) String model,
+            @RequestParam(name = "year", required = false) Integer year) {
+
+        List<Car> cars = carService.searchCars(make, model, year);
         return ResponseEntity.ok(cars);
     }
 

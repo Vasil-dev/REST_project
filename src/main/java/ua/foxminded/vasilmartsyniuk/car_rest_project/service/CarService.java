@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.entity.Car;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.repository.CarRepository;
+import ua.foxminded.vasilmartsyniuk.car_rest_project.repository.CategoryRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CarService {
@@ -26,8 +26,8 @@ public class CarService {
         return carRepository.findAll();
     }
 
-    public Car createCar(Car car) {
-        return carRepository.save(car);
+    public void createCar(Car car) {
+        carRepository.save(car);
     }
 
     public Car updateCar(Car car) {
@@ -38,8 +38,27 @@ public class CarService {
         carRepository.deleteById(id);
     }
 
-    public List<Car> listCarsByMakeModelYear(String make, String model, Integer year) {
-        return carRepository.findByMakeAndModelAndYear(make, model, year);
+    public List<Car> searchCars(String make, String model, Integer year) {
+        if (year != null) {
+            return searchCarsByYear(year);
+        } else if (model != null) {
+            return searchCarsByModel(model);
+        } else if (make != null) {
+            return searchCarsByMake(make);
+        } else {
+            return null;
+        }
     }
 
+    private List<Car> searchCarsByMake(String make) {
+        return carRepository.findByMake(make);
+    }
+
+    private List<Car> searchCarsByModel(String model) {
+        return carRepository.findByModel(model);
+    }
+
+    private List<Car> searchCarsByYear(Integer year) {
+        return carRepository.findByYear(year);
+    }
 }
