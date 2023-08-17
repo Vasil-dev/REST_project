@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.entity.Car;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.repository.CarRepository;
-import ua.foxminded.vasilmartsyniuk.car_rest_project.repository.CategoryRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -39,14 +39,16 @@ public class CarService {
     }
 
     public List<Car> searchCars(String make, String model, Integer year) {
-        if (year != null) {
+        if (make != null && model != null && year != null) {
+            return searchAllParametersCars(make, model, year);
+        } else if (year != null) {
             return searchCarsByYear(year);
         } else if (model != null) {
             return searchCarsByModel(model);
         } else if (make != null) {
             return searchCarsByMake(make);
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 
@@ -60,5 +62,9 @@ public class CarService {
 
     private List<Car> searchCarsByYear(Integer year) {
         return carRepository.findByYear(year);
+    }
+
+    private List<Car> searchAllParametersCars(String make, String model, Integer year) {
+        return carRepository.findByMakeAndModelAndYear(make, model, year);
     }
 }
