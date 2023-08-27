@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.entity.Car;
 import ua.foxminded.vasilmartsyniuk.car_rest_project.service.CarService;
@@ -35,6 +36,7 @@ public class CarController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAuthority('create:cars')")
     public ResponseEntity<String> createCar(@RequestBody Car car) {
         carService.createCar(car);
         LOGGER.info("Creating car: {}", car);
@@ -59,6 +61,7 @@ public class CarController {
     }
 
     @DeleteMapping("/delete")
+    @PreAuthorize("hasAuthority('delete:cars')")
     public ResponseEntity<String> deleteCar(@RequestParam("id") int id) {
         Car car = carService.getById(id);
         if (car == null) {
