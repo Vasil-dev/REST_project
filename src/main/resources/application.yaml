@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cardb
+    username: postgres
+    password: 1234
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://${auth0.domain}/
+      client:
+        registration:
+          github:
+            clientId: 873486aee2ab52f5be43
+            clientSecret: 42064a189b696501981684ec2a06e4142744bbeb
+          google:
+            client-id: 642126301619-2162cq7deosbb13pti0af9hb5t4coisd.apps.googleusercontent.com
+            client-secret: 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
+  thymeleaf:
+    cache: true
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+  application:
+    name: car_rest_project
+
+logging:
+  level:
+    root: info
+
+server:
+  port: 8080
+
+auth0:
+  audience: https://rest-application.com
+  domain: dev-7om2oia2wbcv3vaa.us.auth0.com

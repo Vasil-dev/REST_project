@@ -1,8 +1,5 @@
 package ua.foxminded.vasilmartsyniuk.car_rest_project.security;
 
-import com.auth0.AuthenticationController;
-import com.auth0.jwk.JwkProvider;
-import com.auth0.jwk.JwkProviderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,11 +9,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -35,29 +31,21 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuer;
 
-    @Value(value = "${auth0.domain}")
-    private String domain;
-
-    @Value(value = "${spring.security.oauth2.client.registration.auth0.client-id}")
-    private String clientId;
-
-    @Value(value = "${spring.security.oauth2.client.registration.auth0.client-secret}")
-    private String clientSecret;
-
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
+                .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/cars/**").permitAll()
-                        .requestMatchers("/callback", "/login").permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .formLogin(log -> log.loginPage("/login"))
+                        .requestMatchers("/webjars/**").permitAll()
+                        .anyRequest().authenticated())
+                .oauth2Login(Customizer.withDefaults())
                 .cors(cors -> cors
                         .configurationSource(corsConfigurationSource()))
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(Customizer.withDefaults()))
+                        .jwt(jwt -> jwt.decoder(jwtDecoder())))
                 .build();
     }
 
@@ -86,25 +74,4 @@ public class SecurityConfig {
         jwtDecoder.setJwtValidator(validator);
         return jwtDecoder;
     }
-
-    @Bean
-    public AuthenticationController authenticationController() {
-        JwkProvider jwkProvider = new JwkProviderBuilder(domain).build();
-        return AuthenticationController.newBuilder(domain, clientId, clientSecret)
-                .withJwkProvider(jwkProvider)
-                .build();
-    }
-
-    @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
-        converter.setAuthoritiesClaimName("permissions");
-        converter.setAuthorityPrefix("");
-
-        JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
-        jwtConverter.setJwtGrantedAuthoritiesConverter(converter);
-        return jwtConverter;
-    }
-
-
 }
