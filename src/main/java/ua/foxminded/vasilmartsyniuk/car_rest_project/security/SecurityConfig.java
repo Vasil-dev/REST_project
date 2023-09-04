@@ -36,10 +36,12 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.GET).permitAll()
+                        .requestMatchers(HttpMethod.POST).authenticated()
                         .requestMatchers("/webjars/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(Customizer.withDefaults())
+                .logout(l -> l.logoutUrl("/logout"))
                 .cors(cors -> cors
                         .configurationSource(corsConfigurationSource()))
                 .oauth2ResourceServer(oauth2 -> oauth2
