@@ -10,6 +10,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -22,15 +24,22 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Size(min = 1, max = 999999999)
     private int id;
 
     @Column(name = "make")
+    @Size(min = 1, max = 30)
+    @NotBlank
     private String make;
 
     @Column(name = "year")
+    @Size(min = 1, max = 4)
+    @NotBlank
     private Integer year;
 
     @Column(name = "model")
+    @Size(min = 1, max = 30)
+    @NotBlank
     private String model;
 
     @ManyToMany(fetch = FetchType.EAGER)

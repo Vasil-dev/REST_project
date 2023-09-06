@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.FetchType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.List;
@@ -21,9 +23,12 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Size(min = 1, max = 999999999)
     private Integer id;
 
     @Column(name = "name")
+    @Size(min = 1, max = 30)
+    @NotBlank
     private String name;
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.LAZY)
