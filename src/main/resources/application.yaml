@@ -25,6 +25,7 @@ spring:
     enabled: true
     prefix: classpath:/templates/
     suffix: .html
+
   application:
     name: car_rest_project
 
